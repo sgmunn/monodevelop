@@ -33,6 +33,7 @@ namespace MonoDevelop.Debugger.UIApp
 		static void Main (string [] args)
 		{
 			CommonServices.Instance = new MacAppCommonServices ();
+			CommonStrings.Localized = new CommonStrings ();
 			NSApplication.Init ();
 			NSApplication.Main (args);
 		}

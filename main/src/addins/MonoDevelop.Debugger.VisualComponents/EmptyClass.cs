@@ -28,10 +28,12 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Mono.Debugging.Client;
+using System.Threading;
 
 namespace MonoDevelop.Debugger.VisualComponents
 {
-	public abstract class CommonServices : IPinnedWatchFactory
+	public abstract class CommonServices : IPinnedWatchFactory, IDebuggerServices
 	{
 		public static CommonServices Instance { get; set; }
 
@@ -45,13 +47,73 @@ namespace MonoDevelop.Debugger.VisualComponents
 
 		public abstract IPinnedWatch CreatePinnedWatch ();
 
+		public abstract void AddPinnedWatch (IPinnedWatch watch);
+		public abstract void RemovePinnedWatch (IPinnedWatch watch);
+
+		// TODO: improve how we get at the underlying real stack frame
+		// Frame.GetStackFrame ()
+		public abstract Task<CompletionData> GetCompletionDataAsync (IStackFrame Frame, string expression, CancellationToken token);
+
 	}
 
 	public class CommonStrings
 	{
 		public static CommonStrings Localized { get; set; }
 
+		public CommonStrings ()
+		{
+			Literal = nameof (Literal);
+			Static = nameof (Static);
+			Property = nameof (Property);
+			Class = nameof (Class);
+			Method = nameof (Method);
+			Namespace = nameof (Namespace);
+			OpenResourceFolder = nameof (OpenResourceFolder);
+			Field = nameof (Field);
+			Variable = nameof (Variable);
+			Private = nameof (Private);
+			Internal = nameof (Internal);
+			Protected = nameof (Protected);
+			Warning = nameof (Warning);
+		}
 
+		public string Literal { get; set; }
+		public string Static { get; set; }
+		public string Property { get; set; }
+		public string Class { get; set; }
+		public string Method { get; set; }
+		public string Namespace { get; set; }
+		public string OpenResourceFolder { get; set; }
+		public string Field { get; set; }
+		public string Variable { get; set; }
+		public string Private { get; set; }
+		public string Internal { get; set; }
+		public string Protected { get; set; }
+		public string Warning { get; set; }
+	}
+
+
+
+	public interface IDebuggerServices
+	{
+		void AddPinnedWatch (IPinnedWatch watch);
+		void RemovePinnedWatch (IPinnedWatch watch);
+		Task<CompletionData> GetCompletionDataAsync (IStackFrame Frame, string expression, CancellationToken token);
+	}
+
+	public static class NodeExtensions
+	{
+		public static string GetDisplayValue(this ObjectValueNode node)
+		{
+			return
+				"";
+		}
+
+		public static string GetInlineVisualisation (this ObjectValueNode node)
+		{
+			return
+				"";
+		}
 	}
 
 	public static class CommonExtensions

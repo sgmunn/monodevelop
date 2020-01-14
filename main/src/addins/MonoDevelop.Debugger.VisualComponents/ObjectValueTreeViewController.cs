@@ -281,8 +281,7 @@ namespace MonoDevelop.Debugger.VisualComponents
 		public async Task<CompletionData> GetCompletionDataAsync (string expression, CancellationToken token)
 		{
 			if (CanQueryDebugger && Frame != null) {
-				// TODO: improve how we get at the underlying real stack frame
-				return await DebuggingService.GetCompletionDataAsync (Frame.GetStackFrame (), expression, token);
+				return await CommonServices.Instance.GetCompletionDataAsync (Frame, expression, token);
 			}
 
 			return null;
@@ -303,12 +302,12 @@ namespace MonoDevelop.Debugger.VisualComponents
 			}
 
 			watch.Expression = expression;
-			DebuggingService.PinnedWatches.Add (watch);
+			CommonServices.Instance.AddPinnedWatch (watch);
 		}
 
 		void RemovePinnedWatch ()
 		{
-			DebuggingService.PinnedWatches.Remove (PinnedWatch);
+			CommonServices.Instance.RemovePinnedWatch (PinnedWatch);
 		}
 
 		void RemoveValue (ObjectValueNode node)
@@ -961,29 +960,29 @@ namespace MonoDevelop.Debugger.VisualComponents
 		internal static string GetAccessibilityTitleForIcon (ObjectValueFlags flags, string defaultTitle = null)
 		{
 			if ((flags & ObjectValueFlags.Field) != 0 && (flags & ObjectValueFlags.ReadOnly) != 0)
-				return GettextCatalog.GetString ("Literal");
+				return CommonStrings.Localized.Literal;
 
-			string global = (flags & ObjectValueFlags.Global) != 0 ? GettextCatalog.GetString ("Static") : string.Empty;
+			string global = (flags & ObjectValueFlags.Global) != 0 ? CommonStrings.Localized.Static : string.Empty;
 			string source;
 
 			switch (flags & ObjectValueFlags.OriginMask) {
-			case ObjectValueFlags.Property: source = GettextCatalog.GetString ("Property"); break;
-			case ObjectValueFlags.Type: source = GettextCatalog.GetString ("Class"); global = string.Empty; break;
-			case ObjectValueFlags.Method: source = GettextCatalog.GetString ("Method"); break;
-			case ObjectValueFlags.Literal: return GettextCatalog.GetString ("Literal");
-			case ObjectValueFlags.Namespace: return GettextCatalog.GetString ("Namespace");
-			case ObjectValueFlags.Group: return GettextCatalog.GetString ("Open Resource Folder");
-			case ObjectValueFlags.Field: source = GettextCatalog.GetString ("Field"); break;
-			case ObjectValueFlags.Variable: return GettextCatalog.GetString ("Variable");
+			case ObjectValueFlags.Property: source = CommonStrings.Localized.Property; break;
+			case ObjectValueFlags.Type: source = CommonStrings.Localized.Class; global = string.Empty; break;
+			case ObjectValueFlags.Method: source = CommonStrings.Localized.Method; break;
+			case ObjectValueFlags.Literal: return CommonStrings.Localized.Literal;
+			case ObjectValueFlags.Namespace: return CommonStrings.Localized.Namespace;
+			case ObjectValueFlags.Group: return CommonStrings.Localized.OpenResourceFolder;
+			case ObjectValueFlags.Field: source = CommonStrings.Localized.Field; break;
+			case ObjectValueFlags.Variable: return CommonStrings.Localized.Variable;
 			default: return defaultTitle;
 			}
 
 			string access;
 			switch (flags & ObjectValueFlags.AccessMask) {
-			case ObjectValueFlags.Private: access = GettextCatalog.GetString ("Private"); break;
-			case ObjectValueFlags.Internal: access = GettextCatalog.GetString ("Internal"); break;
+			case ObjectValueFlags.Private: access = CommonStrings.Localized.Private; break;
+			case ObjectValueFlags.Internal: access = CommonStrings.Localized.Internal; break;
 			case ObjectValueFlags.InternalProtected:
-			case ObjectValueFlags.Protected: access = GettextCatalog.GetString ("Protected"); break;
+			case ObjectValueFlags.Protected: access = CommonStrings.Localized.Protected; break;
 			default: access = string.Empty; break;
 			}
 
@@ -994,7 +993,7 @@ namespace MonoDevelop.Debugger.VisualComponents
 		{
 			switch (iconName) {
 			case "md-warning":
-				return GettextCatalog.GetString ("Warning");
+				return CommonStrings.Localized.Warning;
 			default:
 				return defaultTitle;
 			}

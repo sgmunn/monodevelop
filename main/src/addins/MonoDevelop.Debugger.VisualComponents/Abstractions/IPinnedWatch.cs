@@ -30,7 +30,7 @@ namespace MonoDevelop.Debugger.VisualComponents
 {
 	public interface IPinnedWatch
 	{
-		FilePath File { get; set; }
+		//FilePath File { get; set; }
 		bool LiveUpdate { get; }
 		int Line { get; set; }
 		int Column { get; set; }
